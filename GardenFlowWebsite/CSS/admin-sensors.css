@@ -1,0 +1,47 @@
+main>section {
+    gap: 1.875rem;
+    grid-template-rows: .75fr;
+}
+
+
+section>.content-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.875rem;
+}
+
+section>.content-header>h2 {
+    grid-column: 1 / -1;
+}
+
+section>.content-header>div {
+    padding: 1.875rem;
+    border-radius: 0.25rem;
+}
+
+section>.content-header>div {
+    background-color: var(--color-ash);
+}
+
+
+section>.content-header>div>div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+}
+
+section>.content-header>div>div> :first-child {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+section>.content-header>div>p {
+    color: black;
+}
+
+section>.content-header>div>div svg {
+    height: 1.8rem;
+    width: 1.8rem;
+    vertical-align: middle;
+}

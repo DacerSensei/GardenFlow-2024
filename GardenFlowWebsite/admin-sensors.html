@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Monitoring</title>
+    <link rel="icon" type="image/x-icon" href="/Assets/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        type="text/css" />
+    <link rel="stylesheet" href="/CSS/Toolkit.css">
+    <link rel="stylesheet" href="/CSS/main.css">
+    <link rel="stylesheet" href="/CSS/admin-sensors.css">
+</head>
+
+<body>
+    <main id="main">
+        <section>
+            <div class="content-header">
+                <h2>Sensor Values<button class="Button-Red" style="margin-left: 4rem;" id="ReportButton">Generate
+                        Report</button></h2>
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="SensorHumidity">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Humidity</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="Soil">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Soil Moisture</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="pH">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">pH Level</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="Fertilizer">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Fertilizer</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="Rain">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Rain</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="Water">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Water Level</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="SensorTemperature">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Temperature</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="WateringMotor">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Watering Motor</p>
+                </div>
+                <h2>Weather Values</h2>
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="City">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">City</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="WeatherHumidity">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Humidity</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="WeatherTemperature">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Temperature</p>
+                </div>
+
+                <div>
+                    <div>
+                        <span>
+                            <h2 id="Windspeed">0</h2>
+                        </span>
+                    </div>
+                    <p class="Text-Secondary">Windspeed</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="Javascript/Toolkit.js"></script>
+    <script type="module" src="Javascript/main.js"></script>
+    <script type="module" src="Javascript/admin-request-logs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.8/pdfmake.min.js"
+        integrity="sha512-uVTNNXu6Z1rrgpMLuErTMferac7mGwfA7/oXfuGbpSmBqcopa8jCURWE1rBF3LMg7Zir+avOX807eGwHaL7akA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.8/vfs_fonts.js"
+        integrity="sha512-nNkHPz+lD0Wf0eFGO0ZDxr+lWiFalFutgVeGkPdVgrG4eXDYUnhfEj9Zmg1QkrJFLC0tGs8ZExyU/1mjs4j93w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="module">
+        import {
+            getFirestore, collection, addDoc, updateDoc, getDocs, deleteDoc, query, where, doc, getDoc, setDoc
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import {
+            getDatabase, ref, set, onValue
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { Database, FirebaseDatabase } from "/Javascript/main.js";
+
+        document.getElementById("ReportButton").addEventListener("click", GeneratePDF)
+        async function GeneratePDF() {
+            let user;
+            const storedData = localStorage.getItem('userData');
+            if (storedData) {
+                user = JSON.parse(storedData);
+            }
+            const resultData = ref(FirebaseDatabase, "sensors");
+            let data;
+            let weather;
+            onValue(resultData, (snapshot) => {
+                data = snapshot.val();
+            });
+            const baseUrl = 'https://api.weatherapi.com/v1/current.json?key=8c8e398fdc994ecfb7e50000232806&q=Pasig City';
+            fetch(baseUrl).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            }).then(weather => {
+                var docDefinition = {
+                    content: [
+                        { text: "Generated By: " + user["first-name"] + " " + user["last-name"], style: 'header' },
+                        { text: "Date and Time: " + new Date().toLocaleString(), style: 'header' },
+                        {
+                            table: {
+                                body: [
+                                    ['Name', 'Values'],
+                                    ['Sensor Humidity', data["humidity"]],
+                                    ['Soil Moisture', data["soil-moisture"]],
+                                    ['pH Level', data["ph"]],
+                                    ['Sensor Temperature', data["temperature"]],
+                                    ['Water', data["water-level"]],
+                                    ['Watering Motor', data["pump-open"]],
+                                    ['Rain', data["rain"]],
+                                    ['Fertilizer', data["mist-open"]]
+                                ]
+                            }
+                        },
+                        { text: 'Weather Values', style: 'header' },
+                        {
+                            table: {
+                                body: [
+                                    ['Name', 'Values'],
+                                    ['Weather Temperature', weather["current"]["temp_c"]],
+                                    ['Windspeed', weather["current"]["wind_kph"]],
+                                    ['City', weather["location"]["name"]],
+                                    ['Weather Humidity', weather["current"]["humidity"]]
+                                ]
+                            }
+                        }
+                    ]
+                }
+                pdfMake.createPdf(docDefinition).download("Sensor Values " + new Date().toLocaleString());
+            }).catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>

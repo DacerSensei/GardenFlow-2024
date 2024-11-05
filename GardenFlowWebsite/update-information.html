@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Monitoring</title>
+    <link rel="icon" type="image/x-icon" href="/Assets/Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        type="text/css" />
+    <link rel="stylesheet" href="/CSS/Toolkit.css">
+    <link rel="stylesheet" href="/CSS/main.css">
+    <link rel="stylesheet" href="/CSS/accounts.css">
+</head>
+
+<body>
+    <main id="main">
+        <section id="main-section">
+            <div class="container">
+                <form method="post" id="update-information-form">
+                    <section>
+                        <h2>Update Information</h2>
+                        <input style="display: none;" id="hidden-key">
+                        <div class="Solid-Textbox-Green">
+                            <i class="fa-solid fa-signature"></i>
+                            <input type="text" id="first-name" placeholder="First Name" required>
+                        </div>
+                        <div class="Solid-Textbox-Green">
+                            <i class="fa-solid fa-signature"></i>
+                            <input type="text" id="last-name" placeholder="Last Name"
+                                required>
+                        </div>
+                        <div class="Solid-Textbox-Green">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="tel" id="mobile-number" placeholder="Contact Number"
+                                required>
+                        </div>
+                        <button type="submit" class="Solid-Button-Green" style="font-size: 1.125rem"
+                            id="ChangeInformationSaveButton">Save</button>
+                    </section>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="Javascript/Toolkit.js"></script>
+    <script type="module" src="Javascript/main.js"></script>
+    <script type="module" src="Javascript/update-information.js"></script>
+</body>
+
+</html>
